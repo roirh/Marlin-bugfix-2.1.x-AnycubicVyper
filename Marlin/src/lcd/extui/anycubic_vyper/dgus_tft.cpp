@@ -911,6 +911,7 @@ namespace Anycubic {
     time_last = millis() + 500;
 
     float temp = 0;
+    DEBUG_ECHOLNPGM("CheckHeaters");
 
     #if HAS_HOTEND
       // If the hotend temp is abnormal, confirm state before signalling panel
@@ -925,6 +926,8 @@ namespace Anycubic {
           #endif
           faultE0Duration = 0;
         }
+      }else{
+        send_temperature_hotend(TXT_MAIN_HOTEND);
       }
     #endif
 
@@ -940,10 +943,13 @@ namespace Anycubic {
           #endif
           faultBedDuration = 0;
         }
+      }else{
+        send_temperature_bed(TXT_MAIN_BED);
       }
     #endif
 
-    #if 0
+    #if 1
+    
       // Update panel with hotend heater status
       if (hotend_state != AC_heater_temp_reached) {
         if (WITHIN(getActualTemp_celsius(E0) - getTargetTemp_celsius(E0), -1, 1)) {
@@ -1943,7 +1949,7 @@ namespace Anycubic {
     SendValueToTFT(uint16_t(getFeedrate_percent()), TXT_PRINT_SPEED_NOW);
   }
 
-  void DgusTFT::page11() {
+  void DgusTFT::page11() { //settings
     #if ACDEBUG(AC_ALL)
       if ((page_index_saved != page_index_now) || (key_value_saved != key_value)) {
         DEBUG_ECHOLNPGM("page11  page_index_last_2: ", page_index_last_2,  "  page_index_last: ", page_index_last, "  page_index_now: ", page_index_now, "  key: ", key_value);
