@@ -910,6 +910,10 @@ namespace Anycubic {
     if (PENDING(millis(), time_last)) return;
     time_last = millis() + 500;
 
+    #if ACDEBUG(AC_MARLIN)
+      DEBUG_ECHOLNPGM("CheckHeaters");
+    #endif
+
     float temp = 0;
 
     #if HAS_HOTEND
@@ -925,6 +929,8 @@ namespace Anycubic {
           #endif
           faultE0Duration = 0;
         }
+      }else{
+        send_temperature_hotend(TXT_MAIN_HOTEND);
       }
     #endif
 
@@ -940,6 +946,8 @@ namespace Anycubic {
           #endif
           faultBedDuration = 0;
         }
+      }else{
+        send_temperature_bed(TXT_MAIN_BED);
       }
     #endif
 
