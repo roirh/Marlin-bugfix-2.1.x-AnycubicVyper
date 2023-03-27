@@ -67,9 +67,9 @@
 #define E0_STEP_PIN                         PB4
 #define E0_DIR_PIN                          PB3
 
-#define E1_ENABLE_PIN                       PC15
-#define E1_STEP_PIN                         PC0
-#define E1_DIR_PIN                          PC1
+#define Z2_ENABLE_PIN                       PC15
+#define Z2_STEP_PIN                         PC0
+#define Z2_DIR_PIN                          PC1
 
 //
 // Temperature Sensors
