@@ -105,6 +105,7 @@
 
 #define AUTO_LEVEL_TX_PIN                   PB13
 #define AUTO_LEVEL_RX_PIN                   PB12
+#define PROBE_TARE_PIN                      AUTO_LEVEL_TX_PIN //Tare stain gauge between probes
 
 #ifndef Z_MIN_PROBE_PIN
   #define Z_MIN_PROBE_PIN      AUTO_LEVEL_RX_PIN
