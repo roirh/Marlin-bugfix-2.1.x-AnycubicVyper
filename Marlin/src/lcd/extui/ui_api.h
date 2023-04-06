@@ -198,6 +198,11 @@ namespace ExtUI {
     #endif
   #endif
 
+  //AnycubicVyper
+  void setCancelState();
+  void resetCancelState();
+  bool isCanceled();
+
   #if ENABLED(HOST_PROMPT_SUPPORT)
     void setHostResponse(const uint8_t);
   #endif
@@ -239,6 +244,7 @@ namespace ExtUI {
   void setFlow_percent(const int16_t, const extruder_t);
   bool awaitingUserConfirm();
   void setUserConfirmed();
+  bool isWaitingOnUser();
 
   #if M600_PURGE_MORE_RESUMABLE
     void setPauseMenuResponse(PauseMenuResponse);

@@ -958,6 +958,11 @@ namespace ExtUI {
 
   #endif // HAS_LEVELING
 
+  bool is_canceled;
+  void setCancelState() { is_canceled = true; }
+  void resetCancelState() { is_canceled = false; }
+  bool isCanceled() { return is_canceled; }
+
   #if ENABLED(HOST_PROMPT_SUPPORT)
     void setHostResponse(const uint8_t response) { hostui.handle_response(response); }
   #endif
@@ -1125,6 +1130,10 @@ namespace ExtUI {
     #else
       onStatusChanged(FTOP(fstr));
     #endif
+  }
+
+  bool isWaitingOnUser() {
+    return TERN(HAS_RESUME_CONTINUE, wait_for_user, false);
   }
 
   void onSurviveInKilled() {
