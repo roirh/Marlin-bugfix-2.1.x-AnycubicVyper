@@ -599,6 +599,13 @@ typedef struct SettingsDataStruct {
           shaping_y_zeta;      // M593 Y D
   #endif
 
+  //
+  // Probe settings
+  //
+  #if HAS_PROBE_SETTINGS
+    probe_settings_t probe_settings;
+  #endif
+
 } SettingsData;
 
 //static_assert(sizeof(SettingsData) <= MARLIN_EEPROM_SIZE, "EEPROM too small to contain SettingsData!");
@@ -1649,6 +1656,14 @@ void MarlinSettings::postprocess() {
       #endif
     #endif
 
+    // 
+    // Probe settings
+    //
+    #if HAS_PROBE_SETTINGS
+      _FIELD_TEST(probe_settings);
+      EEPROM_WRITE(probe.settings);
+    #endif
+
     //
     // Report final CRC and Data Size
     //
@@ -2649,6 +2664,14 @@ void MarlinSettings::postprocess() {
         stepper.set_shaping_frequency(Y_AXIS, _data[0]);
         stepper.set_shaping_damping_ratio(Y_AXIS, _data[1]);
       }
+      #endif
+
+      // 
+      // Probe settings
+      //
+      #if HAS_PROBE_SETTINGS
+        _FIELD_TEST(probe_settings);
+        EEPROM_READ(probe.settings);
       #endif
 
       //
@@ -3739,6 +3762,11 @@ void MarlinSettings::reset() {
     // Model predictive control
     //
     TERN_(MPCTEMP, gcode.M306_report(forReplay));
+
+    //
+    // Probing settings
+    //
+    TERN_(HAS_PROBE_SETTINGS, gcode.C001_report(forReplay));
   }
 
 #endif // !DISABLE_M503

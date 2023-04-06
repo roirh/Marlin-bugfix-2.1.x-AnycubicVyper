@@ -107,6 +107,10 @@ Probe probe;
 
 xyz_pos_t Probe::offset; // Initialized by settings.load()
 
+#if HAS_PROBE_SETTINGS
+probe_settings_t Probe::settings;  // Initialized by settings.load()
+#endif
+
 #if HAS_PROBE_XY_OFFSET
   const xy_pos_t &Probe::offset_xy = Probe::offset;
 #endif
