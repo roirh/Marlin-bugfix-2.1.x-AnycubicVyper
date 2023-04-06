@@ -1250,6 +1250,15 @@ private:
     static void M710_report(const bool forReplay=true);
   #endif
 
+  #if HAS_PROBE_SETTINGS
+    static void C001();
+    static void C001_report(const bool forReplay=true);
+    #if ENABLED(DGUS_LCD_UI_CREALITY_TOUCH)
+    static void C100();
+
+    #endif
+  #endif
+
   static void T(const int8_t tool_index);
 
 };
