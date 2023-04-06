@@ -32,6 +32,9 @@
 #define DISABLE_DEBUG
 #define DISABLE_JTAG
 
+// Avoid conflict with TIMER_SERVO when using the STM32 HAL
+#define TEMP_TIMER                          5
+
 //
 // EEPROM
 //
@@ -42,7 +45,7 @@
 // Limit Switches
 //
 #define X_MIN_PIN                           PA7
-#define X_MAX_PIN                           PC6
+#define X_MAX_PIN                           PC6 //(Z2_max_pin)
 #define Y_MIN_PIN                           PC5
 #define Y_MAX_PIN                           -1
 #define Z_MIN_PIN                           PB2
