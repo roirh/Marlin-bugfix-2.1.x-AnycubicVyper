@@ -2605,14 +2605,13 @@
   #define MAX_FANS 8  // Max supported fans
 #endif
 
-#define _NOT_E_AUTO(N,F) (E##N##_AUTO_FAN_PIN != FAN##F##_PIN)
-#define _HAS_FAN(F) (PIN_EXISTS(FAN##F) \
+#define _IS_E_AUTO(N,F) (PIN_EXISTS(E##N##_AUTO_FAN) && E##N##_AUTO_FAN_PIN == FAN##F##_PIN)
+#define _HAS_FAN(F) (F < MAX_FANS && PIN_EXISTS(FAN##F) \
                      && CONTROLLER_FAN_PIN != FAN##F##_PIN \
-                     && _NOT_E_AUTO(0,F) && _NOT_E_AUTO(1,F) \
-                     && _NOT_E_AUTO(2,F) && _NOT_E_AUTO(3,F) \
-                     && _NOT_E_AUTO(4,F) && _NOT_E_AUTO(5,F) \
-                     && _NOT_E_AUTO(6,F) && _NOT_E_AUTO(7,F) \
-                     && F < MAX_FANS)
+                     && !_IS_E_AUTO(0,F) && !_IS_E_AUTO(1,F) \
+                     && !_IS_E_AUTO(2,F) && !_IS_E_AUTO(3,F) \
+                     && !_IS_E_AUTO(4,F) && !_IS_E_AUTO(5,F) \
+                     && !_IS_E_AUTO(6,F) && !_IS_E_AUTO(7,F))
 #if _HAS_FAN(0)
   #define HAS_FAN0 1
 #endif
@@ -3263,10 +3262,11 @@
 
 // Number of VFAT entries used. Each entry has 13 UTF-16 characters
 #if ANY(SCROLL_LONG_FILENAMES, HAS_DWIN_E3V2, TFT_COLOR_UI)
-  #define MAX_VFAT_ENTRIES (5)
+  #define VFAT_ENTRIES_LIMIT 5
 #else
-  #define MAX_VFAT_ENTRIES (2)
+  #define VFAT_ENTRIES_LIMIT 2
 #endif
+#define MAX_VFAT_ENTRIES 20 // by VFAT specs to fit LFN of length 255
 
 // Nozzle park for Delta
 #if BOTH(NOZZLE_PARK_FEATURE, DELTA)
@@ -3280,14 +3280,17 @@
 #if defined(TARGET_LPC1768) && IS_RRD_FG_SC && (SD_SCK_PIN == LCD_PINS_D4)
   #define SDCARD_SORT_ALPHA         // Keep one directory level in RAM. Changing directory levels
                                     // may still glitch the screen, but LCD updates clean it up.
-  #undef SDSORT_LIMIT
-  #undef SDSORT_USES_RAM
-  #undef SDSORT_USES_STACK
-  #undef SDSORT_CACHE_NAMES
-  #define SDSORT_LIMIT       64
-  #define SDSORT_USES_RAM    true
-  #define SDSORT_USES_STACK  false
-  #define SDSORT_CACHE_NAMES true
+  #if SDSORT_LIMIT > 64 || !SDSORT_USES_RAM || SDSORT_USES_STACK || !SDSORT_CACHE_NAMES
+    #undef SDSORT_LIMIT
+    #undef SDSORT_USES_RAM
+    #undef SDSORT_USES_STACK
+    #undef SDSORT_CACHE_NAMES
+    #define SDSORT_LIMIT       64
+    #define SDSORT_USES_RAM    true
+    #define SDSORT_USES_STACK  false
+    #define SDSORT_CACHE_NAMES true
+    #define SDSORT_CACHE_LPC1768_WARNING 1
+  #endif
   #ifndef FOLDER_SORTING
     #define FOLDER_SORTING     -1
   #endif
