@@ -23,6 +23,8 @@
 
 #define CONFIG_EXAMPLES_DIR "AnyCubic/Vyper"
 
+#define VYPER_NOZZLE_HOMING // home Z using nozzle sensor at middle of bed
+
 /**
  * Configuration.h
  *
@@ -1217,7 +1219,7 @@
  * Override with M92
  *                                      X, Y, Z [, I [, J [, K...]]], E0 [, E1[, E2...]]
  */
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 100, 400, 418.5 }
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 100, 400, 420 }
 
 /**
  * Default Max Feed Rate (linear=mm/s, rotational=°/s)
@@ -1332,8 +1334,9 @@
 //#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
 
 // Force the use of the probe for Z-axis homing
-//#define USE_PROBE_FOR_Z_HOMING
-
+#if ENABLED(VYPER_NOZZLE_HOMING)
+  #define USE_PROBE_FOR_Z_HOMING
+#endif
 /**
  * Z_MIN_PROBE_PIN
  *
@@ -1554,23 +1557,25 @@
 #define PROBING_MARGIN 10
 
 // X and Y axis travel speed (mm/min) between probes
-#define XY_PROBE_FEEDRATE 6500      // (90*60)
+#define XY_PROBE_FEEDRATE 7200      // (120*60)
 
 // Feedrate (mm/min) for the first approach when double-probing (MULTIPLE_PROBING == 2)
-#define Z_PROBE_FEEDRATE_FAST 150
+#define Z_PROBE_FEEDRATE_FAST 100
 
 // Feedrate (mm/min) for the "accurate" probe of each point
-#define Z_PROBE_FEEDRATE_SLOW (Z_PROBE_FEEDRATE_FAST >> 2)    // /4
+#define Z_PROBE_FEEDRATE_SLOW (Z_PROBE_FEEDRATE_FAST / 2)    // /4
 
 /**
  * Probe Activation Switch
  * A switch indicating proper deployment, or an optical
  * switch triggered when the carriage is near the bed.
  */
-//#define PROBE_ACTIVATION_SWITCH
+#if ENABLED(VYPER_NOZZLE_HOMING)
+  #define PROBE_ACTIVATION_SWITCH   // use left Z sensor for activation
+#endif
 #if ENABLED(PROBE_ACTIVATION_SWITCH)
-  #define PROBE_ACTIVATION_SWITCH_STATE LOW // State indicating probe is active
-  //#define PROBE_ACTIVATION_SWITCH_PIN PC6 // Override default pin
+  #define PROBE_ACTIVATION_SWITCH_STATE HIGH // State indicating probe is active
+  #define PROBE_ACTIVATION_SWITCH_PIN Z_MIN_PIN // Override default pin
 #endif
 
 /**
@@ -1625,15 +1630,20 @@
  *     But: `M851 Z+1` with a CLEARANCE of 2  =>  2mm from bed to nozzle.
  */
 #define Z_CLEARANCE_DEPLOY_PROBE    4 // Z Clearance for Deploy/Stow
-#define Z_CLEARANCE_BETWEEN_PROBES  4 // Z Clearance between probe points
-#define Z_CLEARANCE_MULTI_PROBE     3 // Z Clearance between multiple probes
+#define Z_CLEARANCE_BETWEEN_PROBES  3 // Z Clearance between probe points
+#define Z_CLEARANCE_MULTI_PROBE     1 // Z Clearance between multiple probes
 //#define Z_AFTER_PROBING           5 // Z position after probing is done
 
-#define Z_PROBE_LOW_POINT         -10 // Farthest distance below the trigger-point to go before stopping
+// set low point 2mmm below bed taking into account the 1.5mm above bed for fixed stops
+#if ENABLED(VYPER_NOZZLE_HOMING)
+  #define Z_PROBE_LOW_POINT        -3 // Farthest distance below the trigger-point to go before stopping
+#else
+  #define Z_PROBE_LOW_POINT        -6 // Farthest distance below the trigger-point to go before stopping
+#endif
 
 // For M851 give a range for adjusting the Z probe offset
-#define Z_PROBE_OFFSET_RANGE_MIN -20
-#define Z_PROBE_OFFSET_RANGE_MAX 20
+#define Z_PROBE_OFFSET_RANGE_MIN -10
+#define Z_PROBE_OFFSET_RANGE_MAX 10
 
 // Enable the M48 repeatability test to test probe accuracy
 #define Z_MIN_PROBE_REPEATABILITY_TEST
@@ -1659,12 +1669,12 @@
 //#define PROBING_FANS_OFF          // Turn fans off when probing
 #define PROBING_ESTEPPERS_OFF       // Turn all extruder steppers off when probing
 #define PROBING_STEPPERS_OFF        // Turn all steppers off (unless needed to hold position) when probing (including extruders)
-#define DELAY_BEFORE_PROBING 500    // (ms) To prevent vibrations from triggering piezo sensors
+#define DELAY_BEFORE_PROBING 200    // (ms) To prevent vibrations from triggering piezo sensors
 
 // Require minimum nozzle and/or bed temperature for probing
 #define PREHEAT_BEFORE_PROBING
 #if ENABLED(PREHEAT_BEFORE_PROBING)
-  #define PROBING_NOZZLE_TEMP 120   // (°C) Only applies to E0 at this time
+  #define PROBING_NOZZLE_TEMP 140   // (°C) Only applies to E0 at this time
   #define PROBING_BED_TEMP     50
 #endif
 
@@ -1741,7 +1751,11 @@
 #define Z_HOMING_HEIGHT    4      // (mm) Minimal Z height before homing (G28) for Z clearance above the bed, clamps, ...
                                   // Be sure to have this much clearance over your Z_MAX_POS to prevent grinding.
 
-#define Z_AFTER_HOMING     2      // (mm) Height to move to after homing Z
+#if ENABLED(VYPER_NOZZLE_HOMING)
+  #define Z_AFTER_HOMING  10      // (mm) Height to move to after homing Z
+#else
+  #define Z_AFTER_HOMING  5      // (mm) Height to move to after homing Z
+#endif
 
 // Direction of endstops when homing; 1=MAX, -1=MIN
 // :[-1,1]
@@ -1993,7 +2007,7 @@
 /**
  * Auto-leveling needs preheating
  */
-//#define PREHEAT_BEFORE_LEVELING //TODO: activar 
+//#define PREHEAT_BEFORE_LEVELING
 #if ENABLED(PREHEAT_BEFORE_LEVELING)
   #define LEVELING_NOZZLE_TEMP 140   // (°C) Only applies to E0 at this time
   #define LEVELING_BED_TEMP     50
@@ -2048,7 +2062,7 @@
   /**
    * Enable the G26 Mesh Validation Pattern tool.
    */
-  //#define G26_MESH_VALIDATION
+  #define G26_MESH_VALIDATION
   #if ENABLED(G26_MESH_VALIDATION)
     #define MESH_TEST_NOZZLE_SIZE    0.4  // (mm) Diameter of primary nozzle.
     #define MESH_TEST_LAYER_HEIGHT   0.2  // (mm) Default layer height for G26.
@@ -2064,7 +2078,7 @@
 #if EITHER(AUTO_BED_LEVELING_LINEAR, AUTO_BED_LEVELING_BILINEAR)
 
   // Set the number of grid points per dimension.
-  #define GRID_MAX_POINTS_X 5
+  #define GRID_MAX_POINTS_X 4
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
   // Probe along the Y axis, advancing X after each column
@@ -2223,7 +2237,9 @@
  * - Allows Z homing only when XY positions are known and trusted.
  * - If stepper drivers sleep, XY homing may be required again before Z homing.
  */
-//#define Z_SAFE_HOMING
+#if ENABLED(VYPER_NOZZLE_HOMING)
+  #define Z_SAFE_HOMING
+#endif
 
 #if ENABLED(Z_SAFE_HOMING)
   #define Z_SAFE_HOMING_X_POINT X_CENTER  // X point for Z homing
@@ -3143,11 +3159,16 @@
   //#define ANYCUBIC_LCD_GCODE_EXT  // Add ".gcode" to menu entries for DGUS clone compatibility
 #endif
 
-//
-// Touch-screen LCD for Anycubic Vyper
-//
-#define ANYCUBIC_LCD_VYPER
-#define LCD_SERIAL_PORT 3
+// Touch-screen LCD for Anycubic Vyper and CR-6
+// CR-6 OEM touch screen. A DWIN display with touch.
+// Compatible DWIN part number DMG48270C043_03WTC, 272x480
+// Also Vyper community edition DWIN display
+// Compatible DWIN part number DMG80480C043_02WTR, 480x800
+#define DGUS_LCD_UI_CREALITY_TOUCH
+#define DGUS_LCD_UI_CREALITY_TOUCH_ORIENTATION 2 // Orientation: 0, 1, 2, 3 for 0,90,180,270 degrees respectively
+#define BOOTSCREEN_TIMEOUT 4000
+//#define USE_MARLINUI_BUZZER 1
+//#define LCD_SERIAL_PORT 3 defined in adv.h
 
 //
 // 320x240 Nextion 2.8" serial TFT Resistive Touch Screen NX3224T028
@@ -3388,7 +3409,7 @@
 // However, control resolution will be halved for each increment;
 // at zero value, there are 128 effective control positions.
 // :[0,1,2,3,4,5,6,7]
-#define SOFT_PWM_SCALE 1
+#define SOFT_PWM_SCALE 2
 
 // If SOFT_PWM_SCALE is set to a value higher than 0, dithering can
 // be used to mitigate the associated resolution loss. If enabled,
