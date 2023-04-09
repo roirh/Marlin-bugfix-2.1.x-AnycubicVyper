@@ -353,17 +353,6 @@ probe_settings_t Probe::settings;  // Initialized by settings.load()
 
 #endif // HAS_QUIET_PROBING
 
-/**
- * Raise Z to a minimum height to make room for a probe to move
- */
-void Probe::do_z_raise(const float z_raise) {
-  if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Probe::do_z_raise(", z_raise, ")");
-  float z_dest = z_raise;
-  const float zoffs = DIFF_TERN(HAS_HOTEND_OFFSET, offset.z, hotend_offset[active_extruder].z);
-  if (zoffs < 0) z_dest -= zoffs;
-  do_z_clearance(z_dest);
-}
-
 FORCE_INLINE void probe_specific_action(const bool deploy) {
   DEBUG_SECTION(log_psa, "Probe::probe_specific_action", DEBUGGING(LEVELING));
   #if ENABLED(PAUSE_BEFORE_DEPLOY_STOW)
@@ -526,8 +515,12 @@ bool Probe::set_deployed(const bool deploy, const bool no_return/*=false*/) {
     constexpr bool z_raise_wanted = true;
   #endif
 
-  if (z_raise_wanted)
-    do_z_raise(_MAX(Z_CLEARANCE_BETWEEN_PROBES, Z_CLEARANCE_DEPLOY_PROBE));
+  if (z_raise_wanted) {
+    const float zoffs = _MIN(DIFF_TERN(HAS_HOTEND_OFFSET, offset.z, hotend_offset[active_extruder].z), 0.0f),
+                zdest = _MAX(Z_CLEARANCE_BETWEEN_PROBES, Z_CLEARANCE_DEPLOY_PROBE) - zoffs;
+    if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Raise Z to ", zdest);
+    do_z_clearance(zdest);
+  }
 
   #if EITHER(Z_PROBE_SLED, Z_PROBE_ALLEN_KEY)
     if (homing_needed_error(TERN_(Z_PROBE_SLED, _BV(X_AXIS)))) {
@@ -761,21 +754,21 @@ float Probe::run_z_probe(const bool sanity_check/*=true*/) {
     if (try_to_probe(PSTR("FAST"), z_probe_low_point, z_probe_fast_mm_s,
                      sanity_check, Z_CLEARANCE_BETWEEN_PROBES) ) return NAN;
 
-    const float first_probe_z = DIFF_TERN(HAS_DELTA_SENSORLESS_PROBING, current_position.z, largest_sensorless_adj);
-    if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("1st Probe Z:", first_probe_z);
+    const float z1 = DIFF_TERN(HAS_DELTA_SENSORLESS_PROBING, current_position.z, largest_sensorless_adj);
+    if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("1st Probe Z:", z1);
 
     // Raise to give the probe clearance
-    do_z_clearance(Z_CLEARANCE_MULTI_PROBE);
+    do_z_clearance_by(Z_CLEARANCE_MULTI_PROBE);
 
   #elif Z_PROBE_FEEDRATE_FAST != Z_PROBE_FEEDRATE_SLOW
 
     // If the nozzle is well over the travel height then
     // move down quickly before doing the slow probe
-    const float z = Z_CLEARANCE_DEPLOY_PROBE + 5.0f + _MAX(zoffs, 0.0f);
+    const float z = (Z_CLEARANCE_DEPLOY_PROBE) + 5.0f + _MAX(zoffs, 0.0f);
     if (current_position.z > z) {
       // Probe down fast. If the probe never triggered, raise for probe clearance
       if (!probe_down_to_z(z, z_probe_fast_mm_s))
-        do_z_clearance(Z_CLEARANCE_BETWEEN_PROBES);
+        do_z_clearance_by(Z_CLEARANCE_BETWEEN_PROBES);
     }
   #endif
 
@@ -827,7 +820,7 @@ float Probe::run_z_probe(const bool sanity_check/*=true*/) {
           #if EXTRA_PROBING > 0
             < TOTAL_PROBING - 1
           #endif
-        ) do_z_clearance(Z_CLEARANCE_MULTI_PROBE);
+        ) do_z_clearance(z + (Z_CLEARANCE_MULTI_PROBE));
       #endif
     }
 
@@ -857,10 +850,10 @@ float Probe::run_z_probe(const bool sanity_check/*=true*/) {
 
     const float z2 = DIFF_TERN(HAS_DELTA_SENSORLESS_PROBING, current_position.z, largest_sensorless_adj);
 
-    if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("2nd Probe Z:", z2, " Discrepancy:", first_probe_z - z2);
+    if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("2nd Probe Z:", z2, " Discrepancy:", z1 - z2);
 
     // Return a weighted average of the fast and slow probes
-    const float measured_z = (z2 * 3.0f + first_probe_z * 2.0f) * 0.2f;
+    const float measured_z = (z2 * 3.0f + z1 * 2.0f) * 0.2f;
 
   #else
 
@@ -970,7 +963,7 @@ float Probe::probe_at_point(const_float_t rx, const_float_t ry, const ProbePtRai
     switch (raise_type) {
       default: break;
       case PROBE_PT_RAISE:
-        do_z_clearance(Z_CLEARANCE_BETWEEN_PROBES);
+        do_z_clearance(Z_PROBE_SAFE_CLEARANCE);
         break;
       case PROBE_PT_STOW: case PROBE_PT_LAST_STOW:
         if (stow()) measured_z = NAN;   // Error on stow?
