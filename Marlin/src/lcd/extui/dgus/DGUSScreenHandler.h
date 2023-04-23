@@ -54,6 +54,8 @@
   #include "fysetc/DGUSScreenHandler.h"
 #elif DGUS_LCD_UI_HIPRECY
   #include "hiprecy/DGUSScreenHandler.h"
+#elif DGUS_LCD_UI_CR6_VYPER_CUSTOM
+  #include "cr6_vyper_custom/DGUSScreenHandler.h"
 #endif
 
 extern DGUSScreenHandlerClass ScreenHandler;
