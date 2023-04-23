@@ -3097,6 +3097,12 @@
  * IA_CREALITY (T5UID1)
  *  - Download https://github.com/InsanityAutomation/Marlin/raw/CrealityDwin_2.0/TM3D_Combined480272_Landscape_V7.7z
  *  - Copy the downloaded DWIN_SET folder to the SD card.
+ * 
+ * CR6_VYPER_CUSTOM
+ *   - Original display in Creality CR6 and Anycubic Vyper running custom Community firmware
+ *   - They use different resolution but they are compatible
+ *   - CR6 firmware: https://github.com/CR6Community/CR-6-touchscreen
+ *   - Vyper firmware: https://github.com/rommulaner/Anycubic_Vyper_LCD_CE_6.1d
  *
  * Flash display with DGUS Displays for Marlin:
  *  - Format the SD card to FAT32 with an allocation size of 4kb.
@@ -3104,7 +3110,7 @@
  *  - Plug the microSD card into the back of the display.
  *  - Boot the display and wait for the update to complete.
  *
- * :[ 'ORIGIN', 'FYSETC', 'HYPRECY', 'MKS', 'RELOADED', 'IA_CREALITY' ]
+ * :[ 'ORIGIN', 'FYSETC', 'HYPRECY', 'MKS', 'RELOADED', 'IA_CREALITY', 'CR6_VYPER_CUSTOM']
  */
 //#define DGUS_LCD_UI ORIGIN
 #if DGUS_UI_IS(MKS)

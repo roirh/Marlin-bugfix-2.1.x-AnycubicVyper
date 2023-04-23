@@ -54,4 +54,6 @@ extern const struct DGUS_VP_Variable ListOfVP[];
   #include "fysetc/DGUSDisplayDef.h"
 #elif DGUS_LCD_UI_HIPRECY
   #include "hiprecy/DGUSDisplayDef.h"
+#elif DGUS_LCD_UI_CR6_VYPER_CUSTOM
+  #include "cr6_vyper_custom/DGUSDisplayDef.h"
 #endif
