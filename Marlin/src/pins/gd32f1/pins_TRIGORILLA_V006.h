@@ -67,9 +67,9 @@
 #define E0_STEP_PIN                         PB4
 #define E0_DIR_PIN                          PB3
 
-#define E1_ENABLE_PIN                       PC15
-#define E1_STEP_PIN                         PC0
-#define E1_DIR_PIN                          PC1
+#define Z2_ENABLE_PIN                       PC15
+#define Z2_STEP_PIN                         PC0
+#define Z2_DIR_PIN                          PC1
 
 //
 // Temperature Sensors
@@ -105,6 +105,7 @@
 
 #define AUTO_LEVEL_TX_PIN                   PB13
 #define AUTO_LEVEL_RX_PIN                   PB12
+#define PROBE_TARE_PIN                      AUTO_LEVEL_TX_PIN
 
 #ifndef Z_MIN_PROBE_PIN
   #define Z_MIN_PROBE_PIN      AUTO_LEVEL_RX_PIN
@@ -149,4 +150,42 @@
   #define MOSI_PIN                          PD2   // SDIO_CMD_PIN
   #define SOFTWARE_SPI
 
+#endif
+#if HAS_TMC_UART
+  /**
+   * TMC2209 stepper drivers
+   * Hardware serial communication ports.
+   */
+  #define X_HARDWARE_SERIAL  MSerial2
+  #define Y_HARDWARE_SERIAL  MSerial2
+  #define Z_HARDWARE_SERIAL  MSerial2
+  #define Z2_HARDWARE_SERIAL  MSerial2
+  //#define E1_HARDWARE_SERIAL MSerial2
+
+  #define E0_SERIAL_TX_PIN                  PA11
+  #define E0_SERIAL_RX_PIN                  PA12
+  
+  #define E1_SERIAL_TX_PIN                  -1
+  #define E1_SERIAL_RX_PIN                  -1
+
+  // Default TMC slave addresses
+  #ifndef X_SLAVE_ADDRESS
+    #define X_SLAVE_ADDRESS  3
+  #endif
+  #ifndef Y_SLAVE_ADDRESS
+    #define Y_SLAVE_ADDRESS  2
+  #endif
+  #ifndef Z_SLAVE_ADDRESS
+    #define Z_SLAVE_ADDRESS  1
+  #endif
+  #ifndef Z2_SLAVE_ADDRESS
+    #define Z2_SLAVE_ADDRESS  0
+  #endif
+  #ifndef E0_SLAVE_ADDRESS
+    #define E0_SLAVE_ADDRESS 0
+  #endif
+
+// Reduce baud rate to improve software serial reliability
+  #define TMC_BAUD_RATE                    115200
+  #define TMC_E0_BAUD_RATE                  19200
 #endif
