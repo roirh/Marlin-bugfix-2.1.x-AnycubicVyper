@@ -22,7 +22,7 @@
 
 #include "../../../inc/MarlinConfigPre.h"
 
-#if HAS_DGUS_LCD_CLASSIC
+#if !HAS_DGUS_LCD_CLASSIC
 
 #if HOTENDS > 2
   #warning "More than 2 hotends not implemented on DGUS Display UI."

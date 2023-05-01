@@ -26,22 +26,21 @@
  * DGUS implementation written by coldtobi in 2019 for Marlin
  */
 
-#define DEBUG_OUT 1
-#include "../../../../inc/MarlinConfigPre.h"
+#include "../../../inc/MarlinConfigPre.h"
 
 #if ENABLED(DGUS_LCD_UI_CR6_VYPER_CUSTOM)
 
-#include "../../ui_api.h"
-#include "../../../marlinui.h"
-#include "DGUSDisplay.h"
+#include "../ui_api.h"
+//#include "../../../marlinui.h"
+//#include "DGUSDisplay.h"
 #include "DGUSDisplayDef.h"
 #include "DGUSScreenHandler.h"
-#include "PIDHandler.h"
-#include "MeshValidationHandler.h"
+//#include "MeshValidationHandler.h"
 
 #if ENABLED(POWER_LOSS_RECOVERY)
-  #include "../../../../feature/powerloss.h"
+  #include "../../../feature/powerloss.h"
 #endif
+
 
 extern const char NUL_STR[];
 
@@ -82,9 +81,9 @@ namespace ExtUI {
     while (!ScreenHandler.loop());  // Wait while anything is left to be sent
 }
 
-  void onMediaInserted() { TERN_(SDSUPPORT, ScreenHandler.SDCardInserted()); }
-  void onMediaError()    { TERN_(SDSUPPORT, ScreenHandler.SDCardError()); }
-  void onMediaRemoved()  { TERN_(SDSUPPORT, ScreenHandler.SDCardRemoved()); }
+  void onMediaInserted() { TERN_(HAS_MEDIA, ScreenHandler.SDCardInserted()); }
+  void onMediaError()    { TERN_(HAS_MEDIA, ScreenHandler.SDCardError()); }
+  void onMediaRemoved()  { TERN_(HAS_MEDIA, ScreenHandler.SDCardRemoved()); }
 
   void onPlayTone(const uint16_t frequency, const uint16_t duration) {
     if (ScreenHandler.getCurrentScreen() == DGUSLCD_SCREEN_FEED) {
@@ -114,7 +113,7 @@ bool hasPrintTimer = false;
 
   void onPrintTimerPaused() {
     // Handle M28 Pause SD print - But only if we're not waiting on a user
-    if (ExtUI::isPrintingFromMediaPaused() && ScreenHandler.getCurrentScreen() == DGUSLCD_SCREEN_PRINT_RUNNING && !ExtUI::isWaitingOnUser()) {
+    if (ExtUI::isPrintingFromMediaPaused() && ScreenHandler.getCurrentScreen() == DGUSLCD_SCREEN_PRINT_RUNNING && !ExtUI::awaitingUserConfirm()) {
       ScreenHandler.GotoScreen(DGUSLCD_SCREEN_PRINT_PAUSED);
     }
   }
@@ -172,10 +171,6 @@ bool hasPrintTimer = false;
 
   void onStatusChanged(const char * const msg) { ScreenHandler.setstatusmessage(msg); }
 
-  void onFactoryReset() {
-    ScreenHandler.OnFactoryReset();
-  }
-
    void onHomingStart() {
     ScreenHandler.OnHomingStart();
   }
@@ -186,6 +181,10 @@ bool hasPrintTimer = false;
 
   void onPrintDone() {
     ScreenHandler.OnPrintFinished();
+  }
+
+  void onFactoryReset() {
+    ScreenHandler.OnFactoryReset();
   }
   
   void onStoreSettings(char *buff) {
@@ -200,12 +199,14 @@ bool hasPrintTimer = false;
     // Called after loading or resetting stored settings
   }
 
-  void onConfigurationStoreWritten(bool success) {
+  /*Renamed void onConfigurationStoreWritten(bool success) {*/
+  void onSettingsStored(const bool success) {
     // Called after the entire EEPROM has been written,
     // whether successful or not.
   }
 
-  void onConfigurationStoreRead(bool success) {
+  /*Renamed void onConfigurationStoreRead(bool success) {*/
+  void onSettingsLoaded(const bool success) {
     // Called after the entire EEPROM has been read,
     // whether successful or not.
   }
@@ -230,8 +231,6 @@ bool hasPrintTimer = false;
     }
   #endif
 
-  void onSettingsStored(const bool success){}
-  void onSettingsLoaded(const bool success){}
 
   #if ENABLED(POWER_LOSS_RECOVERY)
     void onSetPowerLoss(const bool onoff) {
@@ -249,7 +248,31 @@ bool hasPrintTimer = false;
   #endif
 
 
-  #if HAS_PID_HEATING
+   #if HAS_PID_HEATING
+    void onPidTuning(const result_t rst) {
+      // Called for temperature PID tuning result
+      switch (rst) {
+        case PID_STARTED:
+          ScreenHandler.setstatusmessage(GET_TEXT_F(MSG_PID_AUTOTUNE));
+          break;
+        case PID_BAD_HEATER_ID:
+          ScreenHandler.setstatusmessage(GET_TEXT_F(MSG_PID_BAD_HEATER_ID));
+          break;
+        case PID_TEMP_TOO_HIGH:
+          ScreenHandler.setstatusmessage(GET_TEXT_F(MSG_PID_TEMP_TOO_HIGH));
+          break;
+        case PID_TUNING_TIMEOUT:
+          ScreenHandler.setstatusmessage(GET_TEXT_F(MSG_PID_TIMEOUT));
+          break;
+        case PID_DONE:
+          ScreenHandler.setstatusmessage(GET_TEXT_F(MSG_PID_AUTOTUNE_DONE));
+          break;
+      }
+      ScreenHandler.GotoScreen(DGUSLCD_SCREEN_MAIN);
+    }
+  #endif
+
+  /*#if HAS_PID_HEATING
     void onPidTuning(const result_t rst) {
       // Called for temperature PID tuning result
       switch (rst) {
@@ -274,7 +297,7 @@ bool hasPrintTimer = false;
         break;
       }
     }
-  #endif
+  #endif*/
 
   void onSteppersDisabled() {
   }
@@ -282,12 +305,14 @@ bool hasPrintTimer = false;
   void onSteppersEnabled() {
   }
 
-  void onMeshValidationStarting() {
+  //TODO: not defined in ui_app.h
+  /*void onMeshValidationStarting() {
     MeshValidationHandler::OnMeshValidationStart();
   }
 
   void onMeshValidationFinished() {
     MeshValidationHandler::OnMeshValidationFinish();
-  }
+  }*/
+  
 }
 #endif // HAS_DGUS_LCD

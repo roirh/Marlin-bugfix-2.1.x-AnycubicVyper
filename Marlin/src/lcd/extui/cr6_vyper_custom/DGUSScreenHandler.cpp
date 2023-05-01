@@ -712,7 +712,7 @@ void DGUSScreenHandler::Buzzer(const uint16_t frequency, const uint16_t duration
 #endif
 
 bool DGUSScreenHandler::HandlePendingUserConfirmation() {
-  if (!ExtUI::isWaitingOnUser()) {
+  if (!ExtUI::awaitingUserConfirm()) {
     return false;
   }
 
@@ -1088,7 +1088,7 @@ void DGUSScreenHandler::ScreenChangeHook(DGUS_VP_Variable &var, void *val_ptr) {
   DEBUG_ECHOLNPGM("Current screen:", current_screen);
   DEBUG_ECHOLNPGM("Cancel target:", target);
 
-  if (ExtUI::isWaitingOnUser() && current_screen == DGUSLCD_SCREEN_POPUP) {
+  if (ExtUI::awaitingUserConfirm() && current_screen == DGUSLCD_SCREEN_POPUP) {
     DEBUG_ECHOLN("Executing confirmation action");
     ExtUI::setUserConfirmed();
     PopToOldScreen();

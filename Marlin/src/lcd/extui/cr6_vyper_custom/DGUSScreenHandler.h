@@ -22,9 +22,9 @@
 #pragma once
 
 #include "DGUSDisplay.h"
-#include "../DGUSVPVariable.h"
-#include "../../../../module/motion.h"
-#include "../../../../inc/MarlinConfig.h"
+#include "DGUSVPVariable.h"
+#include "../../../module/motion.h"
+#include "../../../inc/MarlinConfig.h"
 
 #if HAS_COLOR_LEDS
   #include "../../../feature/leds/leds.h"

@@ -27,14 +27,14 @@
 
 /* Creality DGUS implementation written by Sebastiaan Dammann in 2020 for Marlin */
 
-#include "../../../../inc/MarlinConfigPre.h"
+#include "../../../inc/MarlinConfigPre.h"
 
-#include "../../../../MarlinCore.h"
+#include "../../../MarlinCore.h"
 #if HAS_BED_PROBE
-  #include "../../../../module/probe.h"
+  #include "../../../module/probe.h"
 #endif
 
-#include "../DGUSVPVariable.h"
+#include "DGUSVPVariable.h"
 
 enum DGUSLCD_Screens : uint8_t;
 
@@ -42,7 +42,7 @@ enum DGUSLCD_Screens : uint8_t;
 #define DEBUG_OUT ENABLED(DEBUG_DGUSLCD)
 #endif
 
-#include "../../../../core/debug_out.h"
+#include "../../../core/debug_out.h"
 
 
 typedef enum : uint8_t {
@@ -54,6 +54,8 @@ typedef enum : uint8_t {
 
 typedef void (*UPDATE_CURRENT_SCREEN_CALLBACK)(DGUSLCD_Screens screen);
 
+constexpr uint16_t swap16(const uint16_t value) { return (value & 0xFFU) << 8U | (value >> 8U); }
+
 // Low-Level access to the display.
 class DGUSDisplay {
 public:
@@ -64,8 +66,8 @@ public:
   static void ResetDisplay();
 
   // Variable access.
-  static void WriteVariable(uint16_t adr, const void* values, uint8_t valueslen, bool isstr=false, char fillChar = ' ');
-  static void WriteVariablePGM(uint16_t adr, const void* values, uint8_t valueslen, bool isstr=false, char fillChar = ' ');
+  static void WriteVariable(uint16_t adr, const void *values, uint8_t valueslen, bool isstr=false);
+  static void WriteVariablePGM(uint16_t adr, const void *values, uint8_t valueslen, bool isstr=false);
   static void WriteVariable(uint16_t adr, int16_t value);
   static void WriteVariable(uint16_t adr, uint16_t value);
   static void WriteVariable(uint16_t adr, uint8_t value);
@@ -112,7 +114,7 @@ private:
   static void WritePGM(const char str[], uint8_t len);
   static void ProcessRx();
 
-  static inline uint16_t swap16(const uint16_t value) { return (value & 0xffU) << 8U | (value >> 8U); }
+  //static inline uint16_t swap16(const uint16_t value) { return (value & 0xffU) << 8U | (value >> 8U); }
   static rx_datagram_state_t rx_datagram_state;
   static uint8_t rx_datagram_len;
   static bool Initialized, no_reentrance;
