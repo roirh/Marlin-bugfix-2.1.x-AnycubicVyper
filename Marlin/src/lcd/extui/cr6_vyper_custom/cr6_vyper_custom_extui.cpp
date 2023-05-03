@@ -253,19 +253,19 @@ bool hasPrintTimer = false;
       // Called for temperature PID tuning result
       switch (rst) {
         case PID_STARTED:
-          ScreenHandler.setstatusmessage(GET_TEXT_F(MSG_PID_AUTOTUNE));
+          ScreenHandler.setstatusmessage((PGM_P)GET_TEXT_F(MSG_PID_AUTOTUNE));
           break;
         case PID_BAD_HEATER_ID:
-          ScreenHandler.setstatusmessage(GET_TEXT_F(MSG_PID_BAD_HEATER_ID));
+          ScreenHandler.setstatusmessage((PGM_P)GET_TEXT_F(MSG_PID_BAD_HEATER_ID));
           break;
         case PID_TEMP_TOO_HIGH:
-          ScreenHandler.setstatusmessage(GET_TEXT_F(MSG_PID_TEMP_TOO_HIGH));
+          ScreenHandler.setstatusmessage((PGM_P)GET_TEXT_F(MSG_PID_TEMP_TOO_HIGH));
           break;
         case PID_TUNING_TIMEOUT:
-          ScreenHandler.setstatusmessage(GET_TEXT_F(MSG_PID_TIMEOUT));
+          ScreenHandler.setstatusmessage((PGM_P)GET_TEXT_F(MSG_PID_TIMEOUT));
           break;
         case PID_DONE:
-          ScreenHandler.setstatusmessage(GET_TEXT_F(MSG_PID_AUTOTUNE_DONE));
+          ScreenHandler.setstatusmessage((PGM_P)GET_TEXT_F(MSG_PID_AUTOTUNE_DONE));
           break;
       }
       ScreenHandler.GotoScreen(DGUSLCD_SCREEN_MAIN);
