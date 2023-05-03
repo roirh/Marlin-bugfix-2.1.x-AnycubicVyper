@@ -3146,6 +3146,9 @@
 #elif DGUS_UI_IS(IA_CREALITY)
   //#define LCD_SCREEN_ROTATE 90          // Portrait Mode or 800x480 displays
   //#define IA_CREALITY_BOOT_DELAY 1500   // (ms)
+#elif DGUS_UI_IS(CR6_VYPER_CUSTOM)
+  #define DGUS_LCD_UI_CR6_VYPER_CUSTOM_ORIENTATION 2 // Orientation: 0, 1, 2, 3 for 0,90,180,270 degrees respectively
+  #define BOOTSCREEN_TIMEOUT 4000
 #endif
 
 //
