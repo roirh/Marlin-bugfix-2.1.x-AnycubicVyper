@@ -20,7 +20,7 @@ celsius_t FilamentLoadUnloadHandler::nozzle_temperature = 0;
 float FilamentLoadUnloadHandler::length = 0;
 
 void FilamentLoadUnloadHandler::Init() {
-    nozzle_temperature = ui.material_preset[0].hotend_temp;
+    nozzle_temperature = PREHEAT_1_TEMP_HOTEND;
     length = 400;
 
     if (ExtUI::isPrinting()) {
@@ -48,7 +48,7 @@ void FilamentLoadUnloadHandler::HandleLoadUnloadButton(DGUS_VP_Variable &var, vo
     }
    
     DGUSSynchronousOperation syncOperation;
-    uint16_t button_value = uInt16Value(val_ptr);
+    uint16_t button_value = swap16(*(uint16_t*)val_ptr);//uInt16Value(val_ptr);
     switch (button_value) {
         case FILCHANGE_ACTION_LOAD_BUTTON:
             syncOperation.start();

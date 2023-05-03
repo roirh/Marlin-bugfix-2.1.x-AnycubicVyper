@@ -26,9 +26,9 @@
 
 #if ENABLED(DGUS_LCD_UI_CR6_VYPER_CUSTOM)
 
-#include "DGUSDisplayDef.h"
-#include "DGUSDisplay.h"
-#include "DGUSScreenHandler.h"
+#include "../DGUSDisplayDef.h"
+#include "../DGUSDisplay.h"
+#include "../DGUSScreenHandler.h"
 #include "AxisSettingsHandler.h"
 #include "EstepsHandler.h"
 #include "FilamentLoadUnloadHandler.h"

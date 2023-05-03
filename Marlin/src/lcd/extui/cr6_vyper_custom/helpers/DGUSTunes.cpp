@@ -38,7 +38,7 @@
 #if ENABLED(DGUS_LCD_UI_CR6_VYPER_CUSTOM)
 
 #include "DGUSTunes.h"
-#include "DGUSScreenHandler.h"
+#include "../DGUSScreenHandler.h"
 #include "../../ui_api.h"
 
 //using namespace ExtUI;

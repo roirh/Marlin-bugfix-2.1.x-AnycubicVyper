@@ -3,9 +3,9 @@
 
 #if ENABLED(DGUS_LCD_UI_CR6_VYPER_CUSTOM)
 
-#include "DGUSDisplayDef.h"
-#include "DGUSDisplay.h"
-#include "DGUSScreenHandler.h"
+#include "../DGUSDisplayDef.h"
+#include "../DGUSDisplay.h"
+#include "../DGUSScreenHandler.h"
 
 #include "MeshValidationHandler.h"
 
@@ -84,7 +84,7 @@ void MeshValidationHandler::Cancel() {
     if (is_cancelling) return;
 
     is_cancelling = true;
-    ExtUI::setCancelState();
+    //TODOROI: ExtUI::setCancelState();
 
     SetStatusMessage("Cancelling...");
 }
@@ -135,7 +135,7 @@ void MeshValidationHandler::OnMeshValidationFinish() {
     is_cancelling = false;
 
     ScreenHandler.SetSynchronousOperationFinish();
-    ExtUI::resetCancelState();
+    //TODOROI: ExtUI::resetCancelState();
 }
 
 void MeshValidationHandler::ValidateTemperatures() {

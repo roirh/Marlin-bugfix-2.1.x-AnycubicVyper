@@ -82,7 +82,9 @@ void DGUSDisplay::ResetDisplay() {
   WriteVariable(0x04, resetCommand, sizeof(resetCommand));
 }
 
+/*
 void DGUSDisplay::WriteVariable(uint16_t adr, const void *values, uint8_t valueslen, bool isstr) {
+  //WriteVariable(adr, values, valueslen, isstr, DWIN_DEFAULT_FILLER_CHAR);
   const char* myvalues = static_cast<const char*>(values);
   bool strend = !myvalues;
   WriteHeader(adr, DGUS_CMD_WRITEVAR, valueslen);
@@ -92,6 +94,21 @@ void DGUSDisplay::WriteVariable(uint16_t adr, const void *values, uint8_t values
     if ((isstr && !x) || strend) {
       strend = true;
       x = ' ';
+    }
+    LCD_SERIAL.write(x);
+  }
+}*/
+
+void DGUSDisplay::WriteVariable(uint16_t adr, const void* values, uint8_t valueslen, bool isstr, char fillChar) {
+  const char* myvalues = static_cast<const char*>(values);
+  bool strend = !myvalues;
+  WriteHeader(adr, DGUS_CMD_WRITEVAR, valueslen);
+  while (valueslen--) {
+    char x;
+    if (!strend) x = *myvalues++;
+    if ((isstr && !x) || strend) {
+      strend = true;
+      x = fillChar;
     }
     LCD_SERIAL.write(x);
   }
@@ -139,7 +156,9 @@ void DGUSDisplay::WriteVariable(uint16_t adr, float value) {
     WriteVariable(adr, static_cast<const void*>(&tmp), sizeof(float));
 }
 
+/*
 void DGUSDisplay::WriteVariablePGM(uint16_t adr, const void *values, uint8_t valueslen, bool isstr) {
+  WriteVariablePGM(adr,values,valueslen, isstr, DWIN_DEFAULT_FILLER_CHAR);
   const char* myvalues = static_cast<const char*>(values);
   bool strend = !myvalues;
   WriteHeader(adr, DGUS_CMD_WRITEVAR, valueslen);
@@ -152,7 +171,23 @@ void DGUSDisplay::WriteVariablePGM(uint16_t adr, const void *values, uint8_t val
     }
     LCD_SERIAL.write(x);
   }
+}*/
+
+void DGUSDisplay::WriteVariablePGM(uint16_t adr, const void* values, uint8_t valueslen, bool isstr, char fillChar) {
+  const char* myvalues = static_cast<const char*>(values);
+  bool strend = !myvalues;
+  WriteHeader(adr, DGUS_CMD_WRITEVAR, valueslen);
+  while (valueslen--) {
+    char x;
+    if (!strend) x = pgm_read_byte(myvalues++);
+    if ((isstr && !x) || strend) {
+      strend = true;
+      x = fillChar;
+    }
+    LCD_SERIAL.write(x);
+  }
 }
+
 
 void DGUSDisplay::SetVariableDisplayColor(uint16_t sp, uint16_t color) {
   WriteVariable(sp + 0x03, color);
@@ -315,6 +350,8 @@ rx_datagram_state_t DGUSDisplay::rx_datagram_state = DGUS_IDLE;
 uint8_t DGUSDisplay::rx_datagram_len = 0;
 bool DGUSDisplay::Initialized = false,
      DGUSDisplay::no_reentrance = false;
+
+DGUSLCD_Screens DGUSDisplay::displayRequest = DGUSLCD_SCREEN_BOOT;
 
 // A SW memory barrier, to ensure GCC does not overoptimize loops
 #define sw_barrier() asm volatile("": : :"memory");

@@ -20,7 +20,7 @@
  *
  */
 
-#include "../../../../inc/MarlinConfigPre.h"
+#include "../../../inc/MarlinConfigPre.h"
 
 //#define DEBUG_ECHOLNPGM DEBUG_ECHOLNPGM
 
@@ -28,28 +28,28 @@
 
 #include "DGUSScreenHandler.h"
 #include "DGUSDisplay.h"
-#include "../DGUSVPVariable.h"
+#include "DGUSVPVariable.h"
 #include "DGUSDisplayDef.h"
-#include "DGUSTunes.h"
+#include "helpers/DGUSTunes.h"
 
-#include "../../ui_api.h"
-#include "../../../../MarlinCore.h"
-#include "../../../../module/temperature.h"
-#include "../../../../module/motion.h"
-#include "../../../../module/settings.h"
-#include "../../../../gcode/queue.h"
-#include "../../../../module/planner.h"
-#include "../../../../sd/cardreader.h"
-#include "../../../../libs/duration_t.h"
-#include "../../../../module/printcounter.h"
-#include "../../../../feature/caselight.h"
+#include "../ui_api.h"
+#include "../../../MarlinCore.h"
+#include "../../../module/temperature.h"
+#include "../../../module/motion.h"
+#include "../../../module/settings.h"
+#include "../../../gcode/queue.h"
+#include "../../../module/planner.h"
+#include "../../../sd/cardreader.h"
+#include "../../../libs/duration_t.h"
+#include "../../../module/printcounter.h"
+#include "../../../feature/caselight.h"
 
 #if ENABLED(POWER_LOSS_RECOVERY)
-  #include "../../../../feature/powerloss.h"
+  #include "../../../feature/powerloss.h"
 #endif
 
 #if HAS_COLOR_LEDS
-  #include "../../../../feature/leds/leds.h"
+  #include "../../../feature/leds/leds.h"
 #endif
 
 uint16_t DGUSScreenHandler::ConfirmVP;
@@ -1605,7 +1605,7 @@ void DGUSScreenHandler::OnBackButton(DGUS_VP_Variable &var, void *val_ptr) {
   if (HasSynchronousOperation) return;
 
   // Pop back
-  uint16_t button_value = uInt16Value(val_ptr);
+  uint16_t button_value = swap16(*(uint16_t*)val_ptr);//uInt16Value(val_ptr);
 
   PopToOldScreen();
 

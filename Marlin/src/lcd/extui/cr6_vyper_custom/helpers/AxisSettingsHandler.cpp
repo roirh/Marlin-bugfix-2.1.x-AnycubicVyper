@@ -3,9 +3,9 @@
 
 #if ENABLED(DGUS_LCD_UI_CR6_VYPER_CUSTOM)
 
-#include "DGUSDisplayDef.h"
-#include "DGUSDisplay.h"
-#include "DGUSScreenHandler.h"
+#include "../DGUSDisplayDef.h"
+#include "../DGUSDisplay.h"
+#include "../DGUSScreenHandler.h"
 
 #include "EstepsHandler.h"
 #include "AxisSettingsHandler.h"
@@ -42,7 +42,7 @@ bool AxisSettingsHandler::stealthchop;
 uint32_t AxisSettingsHandler::hybrid_threshold;
 
 void AxisSettingsHandler::HandleNavigation(DGUS_VP_Variable &var, void *val_ptr) {
-    switch (uInt16Value(val_ptr)) {
+    switch (swap16(*(uint16_t*)val_ptr)) {
         case AXIS_SETTINGS_NAV_BUTTON_VAL_X:
             current_axis = X_AXIS;
             axis_settings_title_icon = ICON_AXIS_SETTINGS_TITLE_X;

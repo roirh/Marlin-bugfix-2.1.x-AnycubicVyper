@@ -2,9 +2,9 @@
 
 #if ENABLED(DGUS_LCD_UI_CR6_VYPER_CUSTOM)
 
-#include "DGUSDisplayDef.h"
-#include "DGUSDisplay.h"
-#include "DGUSScreenHandler.h"
+#include "../DGUSDisplayDef.h"
+#include "../DGUSDisplay.h"
+#include "../DGUSScreenHandler.h"
 
 #include "../../../../module/temperature.h"
 #include "../../../../module/motion.h"
@@ -441,7 +441,7 @@ void DGUSCrealityDisplay_HandleReturnKeyEvent(DGUS_VP_Variable &var, void *val_p
 
   while ((ret = (uint16_t*) pgm_read_ptr(&(map->Handler)))) {
     if ((map->ScreenID) == current_screen) {
-        uint16_t button_value = uInt16Value(val_ptr);
+        uint16_t button_value = swap16(*(uint16_t*)val_ptr);//uInt16Value(val_ptr);
         
         SERIAL_ECHOPGM("Invoking handler for screen ", current_screen);
         SERIAL_ECHOLNPGM("with VP=", var.VP, " value=", button_value);

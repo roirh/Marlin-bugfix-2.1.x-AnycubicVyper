@@ -3,9 +3,9 @@
 
 #if ENABLED(DGUS_LCD_UI_CR6_VYPER_CUSTOM)
 
-#include "DGUSDisplayDef.h"
-#include "DGUSDisplay.h"
-#include "DGUSScreenHandler.h"
+#include "../DGUSDisplayDef.h"
+#include "../DGUSDisplay.h"
+#include "../DGUSScreenHandler.h"
 
 #include "PIDHandler.h"
 
@@ -30,7 +30,7 @@ void PIDHandler::Init() {
     fan_on = ExtUI::getTargetFan_percent(ExtUI::fan_t::FAN0) > 10;
 
     // Use configured PLA temps + 10 degrees
-    calibration_temperature = ui.material_preset[0].hotend_temp + 15;
+    calibration_temperature = PREHEAT_1_TEMP_HOTEND + 15;
 
     // Welcome message
     SetStatusMessage(PSTR("Ready"));
