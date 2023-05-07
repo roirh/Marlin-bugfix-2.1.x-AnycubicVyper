@@ -2852,7 +2852,7 @@
    * Interpolate microsteps to 256
    * Override for each driver with <driver>_INTERPOLATE settings below
    */
-  #define INTERPOLATE      true
+  #define INTERPOLATE      false
 
   #if AXIS_IS_TMC_CONFIG(X)
     #define X_CURRENT       550        // (mA) RMS current. Multiply by 1.414 for peak current.
@@ -3336,7 +3336,7 @@
    * Enable M122 debugging command for TMC stepper drivers.
    * M122 S0/1 will enable continuous reporting.
    */
-  //#define TMC_DEBUG
+  #define TMC_DEBUG
 
   /**
    * You can set your own advanced settings by filling in predefined functions.
