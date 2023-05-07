@@ -3148,7 +3148,8 @@
   //#define IA_CREALITY_BOOT_DELAY 1500   // (ms)
 #elif DGUS_UI_IS(CR6_VYPER_CUSTOM)
   #define DGUS_LCD_UI_CR6_VYPER_CUSTOM_ORIENTATION 2 // Orientation: 0, 1, 2, 3 for 0,90,180,270 degrees respectively
-  #define BOOTSCREEN_TIMEOUT 4000
+  #define BOOTSCREEN_TIMEOUT 5000
+  #define EXTUI_LOCAL_BEEPER //use speaker of main 
 #endif
 
 //
