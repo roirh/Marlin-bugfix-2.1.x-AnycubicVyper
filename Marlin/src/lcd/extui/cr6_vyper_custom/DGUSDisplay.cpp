@@ -343,6 +343,7 @@ void DGUSDisplay::ProcessRx() {
       // discard anything else
       rx_datagram_state = DGUS_IDLE;
     }
+    if(rx_datagram_state == DGUS_IDLE) return; //only 1 read per loop
   }
 }
 
