@@ -1444,7 +1444,7 @@ void DGUSScreenHandler::HandleLiveAdjustZ(DGUS_VP_Variable &var, void *val_ptr, 
 
   ExtUI::smartAdjustAxis_steps(steps, ExtUI::axis_t::Z, true);
 #if ENABLED(HAS_BED_PROBE) //  Without a probe the Z offset is applied using baby offsets, which aren't saved anyway.
-  RequestSaveSettings();
+  //RequestSaveSettings();
 #endif
   ScreenHandler.ForceCompleteUpdate();
   ScreenHandler.skipVP = var.VP; // don't overwrite value the next update time as the display might autoincrement in parallel
@@ -1487,7 +1487,7 @@ void DGUSScreenHandler::HandleLEDToggle() {
   caselight.on = newState;
   caselight.update(newState);
 
-  RequestSaveSettings();
+  //RequestSaveSettings();
   ForceCompleteUpdate();
 }
 
