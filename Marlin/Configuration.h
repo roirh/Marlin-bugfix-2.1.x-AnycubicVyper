@@ -1623,8 +1623,8 @@
  *     But: `M851 Z+1` with a CLEARANCE of 2  =>  2mm from bed to nozzle.
  */
 #define Z_CLEARANCE_DEPLOY_PROBE    0 // Z Clearance for Deploy/Stow
-#define Z_CLEARANCE_BETWEEN_PROBES  4 // Z Clearance between probe points
-#define Z_CLEARANCE_MULTI_PROBE     2 // Z Clearance between multiple probes
+#define Z_CLEARANCE_BETWEEN_PROBES  2 // Z Clearance between probe points
+#define Z_CLEARANCE_MULTI_PROBE     1 // Z Clearance between multiple probes
 //#define Z_AFTER_PROBING           5 // Z position after probing is done
 
 // set low point 2mmm below bed taking into account the 1.5mm above bed for fixed stops
@@ -1710,6 +1710,7 @@
 #define INVERT_X_DIR false
 #define INVERT_Y_DIR false
 #define INVERT_Z_DIR true
+#define INVERT_Z2_DIR true
 //#define INVERT_I_DIR false
 //#define INVERT_J_DIR false
 //#define INVERT_K_DIR false
