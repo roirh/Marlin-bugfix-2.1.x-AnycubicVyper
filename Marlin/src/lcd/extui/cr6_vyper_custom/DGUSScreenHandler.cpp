@@ -772,10 +772,11 @@ void DGUSScreenHandler::OnMeshLevelingStart() {
 }
 
 void DGUSScreenHandler::OnMeshLevelingUpdate(const int8_t x, const int8_t y, const float z) {
-  SERIAL_ECHOLNPGM("X: ", x);
-  SERIAL_ECHOLNPGM("; Y: ", y);
-  SERIAL_ECHOLNPGM("; Index ", MeshLevelIndex);
-  SERIAL_ECHOLNPGM("; Icon ", MeshLevelIconIndex);
+  SERIAL_ECHOPGM("X: ", x);
+  SERIAL_ECHOPGM("; Y: ", y);
+  SERIAL_ECHOPGM("; Index ", MeshLevelIndex);
+  SERIAL_ECHOPGM("; Icon ", MeshLevelIconIndex);
+  SERIAL_ECHOLNPGM("; Z: ", z);
 
   UpdateMeshValue(x, y, z);
 
