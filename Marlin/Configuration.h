@@ -156,7 +156,7 @@
 //#define U_DRIVER_TYPE  A4988
 //#define V_DRIVER_TYPE  A4988
 //#define W_DRIVER_TYPE  A4988
-#define E0_DRIVER_TYPE TMC2209
+#define E0_DRIVER_TYPE TMC2209_STANDALONE
 //#define E1_DRIVER_TYPE A4988
 //#define E2_DRIVER_TYPE A4988
 //#define E3_DRIVER_TYPE A4988
@@ -3149,7 +3149,8 @@
 #elif DGUS_UI_IS(CR6_VYPER_CUSTOM)
   #define DGUS_LCD_UI_CR6_VYPER_CUSTOM_ORIENTATION 2 // Orientation: 0, 1, 2, 3 for 0,90,180,270 degrees respectively
   //#define BOOTSCREEN_TIMEOUT 5000
-  #define EXTUI_LOCAL_BEEPER //use speaker of main 
+  #define EXTUI_LOCAL_BEEPER //use speaker of mainboard
+  #define LCD_SERIAL_PORT 3
 #endif
 
 //
