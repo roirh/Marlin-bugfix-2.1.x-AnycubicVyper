@@ -821,7 +821,7 @@ void DGUSScreenHandler::SetViewMeshLevelState() {
 }
 #if HAS_MESH
 void DGUSScreenHandler::InitMeshValues() {
-  if (ExtUI::getMeshValid()) {
+  if (ExtUI::getLevelingIsValid()) {
     for (uint8_t x = 0; x < GRID_MAX_POINTS_X; x++) {
       for (uint8_t y = 0; y < GRID_MAX_POINTS_Y; y++) {
           float z = ExtUI::getMeshPoint({ x, y });
@@ -1005,7 +1005,7 @@ void DGUSScreenHandler::HandleMeshPoint(DGUS_VP_Variable &var, void *val_ptr) {
   SERIAL_ECHOLNPGM("Overriding mesh value. X:", x);
   SERIAL_ECHOLNPGM(" Y:", y);
   SERIAL_ECHO(" Z:");
-  SERIAL_ECHO_F(z, 4);
+  SERIAL_ECHO(p_float_t(z, 7), 4);
   SERIAL_ECHOLNPGM(" [raw: ", rawZ);
   SERIAL_ECHOLNPGM("] [point ", probe_point, "] ");
   SERIAL_ECHOLNPGM(" [VP: ", var.VP);
@@ -1298,9 +1298,9 @@ void DGUSScreenHandler::HandleStepPerMMChanged(DGUS_VP_Variable &var, void *val_
     case VP_Z_STEP_PER_MM: axis = ExtUI::axis_t::Z; break;
     default: return;
   }
-  DEBUG_ECHOLNPAIR_F("value:", value);
+  DEBUG_ECHOLN(F("value:"), p_float_t(value,7));
   ExtUI::setAxisSteps_per_mm(value, axis);
-  DEBUG_ECHOLNPAIR_F("value_set:", ExtUI::getAxisSteps_per_mm(axis));
+  DEBUG_ECHOLN(F("value_set:"), p_float_t( ExtUI::getAxisSteps_per_mm(axis),7));
   ScreenHandler.skipVP = var.VP; // don't overwrite value the next update time as the display might autoincrement in parallel
   return;
 }
@@ -1321,9 +1321,9 @@ void DGUSScreenHandler::HandleStepPerMMExtruderChanged(DGUS_VP_Variable &var, vo
       case VP_E1_STEP_PER_MM: extruder = ExtUI::extruder_t::E1; break;
     #endif
   }
-  DEBUG_ECHOLNPAIR_F("value:", value);
+  DEBUG_ECHOLN(F("value:"), p_float_t(value,7));
   ExtUI::setAxisSteps_per_mm(value,extruder);
-  DEBUG_ECHOLNPAIR_F("value_set:", ExtUI::getAxisSteps_per_mm(extruder));
+  DEBUG_ECHOLN(F("value_set:"), p_float_t( ExtUI::getAxisSteps_per_mm(extruder),7));
   ScreenHandler.skipVP = var.VP; // don't overwrite value the next update time as the display might autoincrement in parallel
   return;
 }
@@ -1355,7 +1355,7 @@ void DGUSScreenHandler::HandleStepPerMMExtruderChanged(DGUS_VP_Variable &var, vo
       #endif
     }
 
-    DEBUG_ECHOLNPAIR_F("V3:", newvalue);
+    DEBUG_ECHOLN(F("V3:"), p_float_t( newvalue,7));
     *(float *)var.memadr = newvalue;
     ScreenHandler.skipVP = var.VP; // don't overwrite value the next update time as the display might autoincrement in parallel
   }

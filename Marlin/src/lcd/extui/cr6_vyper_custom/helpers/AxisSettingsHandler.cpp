@@ -67,7 +67,9 @@ void AxisSettingsHandler::HandleNavigation(DGUS_VP_Variable &var, void *val_ptr)
     // Load settings for axis
     axis_steps_mm = planner.settings.axis_steps_per_mm[current_axis];
     max_acceleration_mm_per_s2 = static_cast<uint16_t>(planner.settings.max_acceleration_mm_per_s2[current_axis]);
-    IF_ENABLED(CLASSIC_JERK, jerk = planner.max_jerk[current_axis]);
+    #if(HAS_CLASSIC_JERK)
+        jerk = planner.max_jerk[current_axis];
+    #endif
     max_feedrate = planner.settings.max_feedrate_mm_s[current_axis];
 
     #if HAS_TRINAMIC_CONFIG
@@ -142,7 +144,9 @@ void AxisSettingsHandler::HandleBackNavigation(DGUS_VP_Variable &var, void *val_
     // Save settings for axis
     planner.settings.axis_steps_per_mm[current_axis] = axis_steps_mm;
     planner.settings.max_acceleration_mm_per_s2[current_axis] = max_acceleration_mm_per_s2;
-    IF_ENABLED(CLASSIC_JERK, planner.max_jerk[current_axis] = jerk);
+    #if(HAS_CLASSIC_JERK)
+        jerk = planner.max_jerk[current_axis];
+    #endif
     planner.settings.max_feedrate_mm_s[current_axis] = max_feedrate;
 
     // If we're handling the E-axis, the back button might end on that screen. Show that we didn't forget the settings.

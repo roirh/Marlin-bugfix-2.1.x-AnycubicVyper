@@ -50,7 +50,7 @@ void MeshValidationHandler::Start() {
     if (is_running) return;
 
     // Validate
-    if (!ExtUI::getMeshValid()) {
+    if (!ExtUI::getLevelingIsValid()) {
         SetStatusMessage("Please level bed first");
         return;
     }

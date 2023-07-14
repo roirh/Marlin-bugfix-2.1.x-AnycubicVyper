@@ -134,7 +134,7 @@ public:
     static void HandlePIDAutotune(DGUS_VP_Variable &var, void *val_ptr);
   #endif
 
-  #if EITHER(HAS_BED_PROBE, BABYSTEPPING)
+  #if ANY(HAS_BED_PROBE, BABYSTEPPING)
     // Hook for "Change probe offset z"
     template<int decimals>
     static void HandleZoffsetChange(DGUS_VP_Variable &var, void *val_ptr) {
@@ -270,7 +270,10 @@ public:
     if (!var.memadr) return;
     union { unsigned char tmp[sizeof(T)]; T t; } x;
     unsigned char *ptr = (unsigned char*)val_ptr;
-    LOOP_L_N(i, sizeof(T)) x.tmp[i] = ptr[sizeof(T) - i - 1];
+
+    for(uint8_t i = 0; i < sizeof(T); ++i) {
+      x.tmp[i] = ptr[sizeof(T) - i - 1];
+    }
     *(T*)var.memadr = x.t;
   }
 
